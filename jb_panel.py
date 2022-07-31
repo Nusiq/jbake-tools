@@ -1,6 +1,7 @@
 import bpy
 from bpy.types import Panel
 
+
 class JB_PT_Panel(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -13,7 +14,7 @@ class JB_PT_Panel(Panel):
         scene = context.scene
 
         row = layout.row()
-        split = row.split(factor=0.4,align=True)
+        split = row.split(factor=0.4, align=True)
         col = split.column()
         col.label(text='Low Poly')
 
@@ -21,7 +22,7 @@ class JB_PT_Panel(Panel):
         col.prop(context.scene, "low_poly", text="")
 
         row = layout.row()
-        split = row.split(factor=0.4,align=True)
+        split = row.split(factor=0.4, align=True)
         col = split.column()
         col.label(text='High Poly')
 
@@ -30,6 +31,7 @@ class JB_PT_Panel(Panel):
 
         row = layout.row()
         row.operator('object.bake_op', text='Bake maps', icon='MOD_BOOLEAN')
+
 
 class JB_PT_Settings_Panel(Panel):
     bl_space_type = "VIEW_3D"
@@ -46,7 +48,8 @@ class JB_PT_Settings_Panel(Panel):
         row.prop(context.scene.render.bake, "cage_extrusion", text="Extrusion")
 
         row = layout.row()
-        row.prop(context.scene.render.bake, "max_ray_distance", text="Max Ray Distance")
+        row.prop(context.scene.render.bake,
+                 "max_ray_distance", text="Max Ray Distance")
 
         row = layout.row()
         col = row.column()
@@ -60,7 +63,7 @@ class JB_PT_Settings_Panel(Panel):
 
         if context.scene.render.bake.use_cage:
             row = layout.row()
-            split = row.split(factor=0.4,align=True)
+            split = row.split(factor=0.4, align=True)
             col = split.column()
             col.label(text='Cage Object')
 
