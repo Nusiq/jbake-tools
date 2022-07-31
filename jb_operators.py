@@ -6,12 +6,12 @@ from . utils.select_utils import *
 class JB_Bake_Op(Operator):
     bl_idname = "object.bake_op"
     bl_label = "Bake maps"
-    bl_description = "Bake image maps for low and high poly objects" 
-    bl_options = {'REGISTER'} 
+    bl_description = "Bake image maps for low and high poly objects"
+    bl_options = {'REGISTER'}
 
     def __init__(self):
       self.__baking = False
-    
+
     @classmethod
     def poll(cls, context):
 
@@ -21,12 +21,12 @@ class JB_Bake_Op(Operator):
       return (low_poly and high_poly)
 
     def add_link_by_index(self, node_tree, node, node2, output_name, input_index):
-        node_tree.links.new(node.outputs[output_name], node2.inputs[input_index])   
+        node_tree.links.new(node.outputs[output_name], node2.inputs[input_index])
 
     def add_link(self, node_tree, node, node2, output_name, input_name, non_color_data = False):
-        
+
         node_tree.links.new(node.outputs[output_name], node2.inputs[input_name])
-        
+
         if(hasattr(node, "color_space")):
             if(non_color_data):
                 node.color_space = "NONE"
@@ -61,17 +61,17 @@ class JB_Bake_Op(Operator):
     def execute(self, context):
 
       self.__baking = True
-  
+
       low_poly = context.scene.low_poly
       high_poly = context.scene.high_poly
 
       if len(low_poly.data.materials) == 0:
         err_material = "Assign a material to {0} before baking"
         self.report({'ERROR'}, err_material.format(low_poly.name) )
-        return {'CANCELLED'}    
+        return {'CANCELLED'}
 
       node_tree = low_poly.data.materials[0].node_tree
-      
+
       # Bake the image maps from high poly to low poly
 
       # 1. Check if the low poly object has a principled shader
@@ -84,14 +84,14 @@ class JB_Bake_Op(Operator):
       bpy.context.scene.render.engine = 'CYCLES'
 
       low_poly.hide_set(False)
-      low_poly.select_set(True) 
+      low_poly.select_set(True)
       bpy.ops.object.mode_set(mode='OBJECT')
 
       self.create_normal_map(node_tree, pri_shader_node)
-      
+
       hp_hide = high_poly.hide_get()
       high_poly.hide_set(False)
-      high_poly.select_set(True) 
+      high_poly.select_set(True)
       low_poly.select_set(True)
 
       make_active(low_poly)
@@ -122,7 +122,7 @@ class JB_Bake_Op(Operator):
         #    If not, create an image texture node and attach it
         normal_img_node = None
         if not normal_map_node.inputs["Color"].is_linked:
-          normal_img_node = self.create_normal_img_node(node_tree)       
+          normal_img_node = self.create_normal_img_node(node_tree)
           self.add_link(node_tree, normal_img_node, normal_map_node, "Color", "Color", True)
         else:
           normal_img_node = normal_map_node.inputs["Color"].links[0].from_node

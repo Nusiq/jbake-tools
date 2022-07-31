@@ -6,12 +6,12 @@ class JB_PT_Panel(Panel):
     bl_region_type = "UI"
     bl_label = "Bake objects"
     bl_category = "JBake"
-    
+
     def draw(self, context):
-       
+
         layout = self.layout
         scene = context.scene
-        
+
         row = layout.row()
         split = row.split(factor=0.4,align=True)
         col = split.column()
@@ -36,9 +36,9 @@ class JB_PT_Settings_Panel(Panel):
     bl_region_type = "UI"
     bl_label = "Bake settings"
     bl_category = "JBake"
-    
+
     def draw(self, context):
-       
+
         layout = self.layout
         scene = context.scene
 
