@@ -11,8 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from . jb_operators import *
-from . jb_panel import *
+from .jb_operators import *
+from .jb_panel import *
 from bpy.props import *
 import bpy
 bl_info = {
@@ -33,6 +33,22 @@ bpy.types.Scene.jbake_low_poly = PointerProperty(type=bpy.types.Object)
 
 # High poly object with the details to bake
 bpy.types.Scene.jbake_high_poly = PointerProperty(type=bpy.types.Object)
+
+# Bake to copy settings
+bpy.types.Scene.jbake_bake_to_copy = BoolProperty(default=False)
+bpy.types.Scene.jbake_decimation_mode = EnumProperty(
+    items=[
+        ("Remesh", "Remesh", "Remesh"),
+        ("Decimate", "Decimate", "Decimate")
+    ]
+)
+bpy.types.Scene.jbake_decimation_ratio = FloatProperty(
+    name="Decimation Ratio",
+    min=0.0, max=1.0, default=0.5
+)
+#   data.remesh_voxel_size
+
+
 
 bpy.types.Scene.img_bake_width = bpy.props.IntProperty(
     name="Image Width",  description="Width of image to bake", default=2048)

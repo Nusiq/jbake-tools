@@ -13,12 +13,16 @@ class JB_PT_Panel(Panel):
         layout = self.layout
 
         row = layout.row()
-        split = row.split(factor=0.4, align=True)
-        col = split.column()
-        col.label(text='Low Poly')
+        row.prop(context.scene, "jbake_bake_to_copy", text="Bake to copy")
 
-        col = split.column()
-        col.prop(context.scene, "jbake_low_poly", text="")
+        if not context.scene.jbake_bake_to_copy:
+            row = layout.row()
+            split = row.split(factor=0.4, align=True)
+            col = split.column()
+            col.label(text='Low Poly')
+
+            col = split.column()
+            col.prop(context.scene, "jbake_low_poly", text="")
 
         row = layout.row()
         split = row.split(factor=0.4, align=True)
@@ -68,3 +72,17 @@ class JB_PT_Settings_Panel(Panel):
 
             col = split.column()
             col.prop(context.scene.render.bake, "cage_object", text="")
+
+        if context.scene.jbake_bake_to_copy:
+            row = layout.row()
+            row.prop(context.scene, "jbake_decimation_mode", text="Decimation Mode")
+            if context.scene.jbake_decimation_mode == 'Remesh':
+                row = layout.row()
+                row.prop(
+                    context.scene.jbake_high_poly.data, "remesh_voxel_size",
+                    text="Voxel Size")
+            else:
+                row = layout.row()
+                row.prop(
+                    context.scene, "jbake_decimation_ratio",
+                    text="Decimation Ratio")

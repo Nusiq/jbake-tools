@@ -52,3 +52,26 @@ def select(obj):
 
 def deselect(obj):
     obj.select_set(state=False)
+
+
+def duplicate_object():
+    bpy.ops.object.duplicate_move()
+
+def add_material():
+    mat = bpy.data.materials.new(name="Material")
+    obj = bpy.context.object
+    if obj.data.materials:
+        obj.data.materials[0] = mat
+    else:
+        obj.data.materials.append(mat)
+    obj.active_material.use_nodes = True
+
+def map_uv():
+    bpy.ops.uv.smart_project()
+
+def remesh():
+    bpy.ops.object.voxel_remesh()
+
+def decimate(ratio):
+    
+    bpy.ops.mesh.decimate(ratio=ratio)

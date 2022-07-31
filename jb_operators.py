@@ -12,11 +12,10 @@ class JB_Bake_Op(Operator):
 
     @classmethod
     def poll(cls, context):
-
         low_poly = context.scene.jbake_low_poly
         high_poly = context.scene.jbake_high_poly
-
-        return low_poly and high_poly
+        bake_to_copy = context.scene.jbake_bake_to_copy
+        return (low_poly or bake_to_copy) and high_poly
 
     def add_link(self, node_tree, node, node2, output_name, input_name, non_color_data=False):
         '''
@@ -70,6 +69,8 @@ class JB_Bake_Op(Operator):
         bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True)
 
     def execute(self, context):
+        if context.scene.jbake_bake_to_copy:
+            self.make_low_poly_copy(context)
         low_poly = context.scene.jbake_low_poly
         high_poly = context.scene.jbake_high_poly
 
@@ -139,3 +140,30 @@ class JB_Bake_Op(Operator):
                           normal_map_node, "Color", "Color", True)
         else:
             normal_img_node = normal_map_node.inputs["Color"].links[0].from_node
+
+    def make_low_poly_copy(self, context):
+        # Make the copy of the high poly object
+        high_poly = context.scene.jbake_high_poly
+        high_poly.hide_set(False)
+        high_poly.select_set(True)
+        make_active(high_poly)
+        duplicate_object()
+        context.scene.jbake_low_poly = get_active()
+        # Add a material to the copy
+        add_material()
+
+        # Decimate/remesh the copied object
+        if context.scene.jbake_decimation_mode == 'Remesh':
+            to_sculpt()
+            remesh()
+            to_object()
+        else:
+            to_edit()
+            select_mesh()
+            decimate(context.scene.jbake_decimation_ratio)
+            to_object()
+        # Map UV of the copy
+        to_edit()
+        select_mesh()
+        map_uv()
+        to_object()
