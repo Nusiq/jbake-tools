@@ -1,3 +1,6 @@
+**This is a fork of the original JBake tool that I use for testing how much can I decimate/remesh the low poly mesh before it starts to look bad. This fork adds an option to automate creating a copy of the high poly object, decimating it and baking the normals to the copy using the source mesh.**
+
+
 # JBake Tools
 Addon to simplify the high to lowpoly baking workflow with Blender.
 
