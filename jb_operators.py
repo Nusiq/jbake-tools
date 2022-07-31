@@ -5,28 +5,23 @@ from . utils.select_utils import *
 
 
 class JB_Bake_Op(Operator):
-    bl_idname = "object.bake_op"
+    bl_idname = "object.jbake_bake_op"
     bl_label = "Bake maps"
     bl_description = "Bake image maps for low and high poly objects"
     bl_options = {'REGISTER'}
 
-    def __init__(self):
-        self.__baking = False
-
     @classmethod
     def poll(cls, context):
 
-        low_poly = context.scene.low_poly
-        high_poly = context.scene.high_poly
+        low_poly = context.scene.jbake_low_poly
+        high_poly = context.scene.jbake_high_poly
 
-        return (low_poly and high_poly)
-
-    def add_link_by_index(self, node_tree, node, node2, output_name, input_index):
-        node_tree.links.new(
-            node.outputs[output_name], node2.inputs[input_index])
+        return low_poly and high_poly
 
     def add_link(self, node_tree, node, node2, output_name, input_name, non_color_data=False):
-
+        '''
+        Links two nodes in the node tree.
+        '''
         node_tree.links.new(
             node.outputs[output_name], node2.inputs[input_name])
 
@@ -37,8 +32,11 @@ class JB_Bake_Op(Operator):
                 node.color_space = "COLOR"
 
     def create_normal_img_node(self, node_tree):
+        '''
+        Image texture node for the normal map.
+        '''
         img_node = node_tree.nodes.new('ShaderNodeTexImage')
-        img_name = bpy.context.scene.low_poly.name + "_" + "normal"
+        img_name = bpy.context.scene.jbake_low_poly.name + "_" + "normal"
         img_width = bpy.context.scene.img_bake_width
         img_height = bpy.context.scene.img_bake_height
 
@@ -50,9 +48,15 @@ class JB_Bake_Op(Operator):
         return img_node
 
     def create_normal_map_node(self, node_tree):
+        '''
+        Creates a nomral map image node.
+        '''
         return node_tree.nodes.new('ShaderNodeNormalMap')
 
     def get_node(self, node_type, node_tree):
+        '''
+        Finds node in node tree by its type, or returns None if not found.
+        '''
         for node in node_tree.nodes:
             if node.type == node_type:
                 return node
@@ -60,14 +64,14 @@ class JB_Bake_Op(Operator):
         return None
 
     def bake_normal_map(self):
+        '''
+        Runs the bake normal map operator.
+        '''
         bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True)
 
     def execute(self, context):
-
-        self.__baking = True
-
-        low_poly = context.scene.low_poly
-        high_poly = context.scene.high_poly
+        low_poly = context.scene.jbake_low_poly
+        high_poly = context.scene.jbake_high_poly
 
         if len(low_poly.data.materials) == 0:
             err_material = "Assign a material to {0} before baking"
@@ -108,11 +112,14 @@ class JB_Bake_Op(Operator):
 
         # reset render engine
         bpy.context.scene.render.engine = render_engine_old
-        self.__baking = False
 
         return {'FINISHED'}
 
     def create_normal_map(self, node_tree, pri_shader_node):
+        '''
+        Creates a normal map and image, if it's not attached to the material
+        of the model already.
+        '''
         # 2. Check if there is a normal map attached already.
         #    If not, create a normal map and attach it
         normal_map_node = None

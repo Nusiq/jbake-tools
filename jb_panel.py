@@ -11,7 +11,6 @@ class JB_PT_Panel(Panel):
     def draw(self, context):
 
         layout = self.layout
-        scene = context.scene
 
         row = layout.row()
         split = row.split(factor=0.4, align=True)
@@ -19,7 +18,7 @@ class JB_PT_Panel(Panel):
         col.label(text='Low Poly')
 
         col = split.column()
-        col.prop(context.scene, "low_poly", text="")
+        col.prop(context.scene, "jbake_low_poly", text="")
 
         row = layout.row()
         split = row.split(factor=0.4, align=True)
@@ -27,10 +26,10 @@ class JB_PT_Panel(Panel):
         col.label(text='High Poly')
 
         col = split.column()
-        col.prop(context.scene, "high_poly", text="")
+        col.prop(context.scene, "jbake_high_poly", text="")
 
         row = layout.row()
-        row.operator('object.bake_op', text='Bake maps', icon='MOD_BOOLEAN')
+        row.operator('object.jbake_bake_op', text='Bake maps', icon='MOD_BOOLEAN')
 
 
 class JB_PT_Settings_Panel(Panel):

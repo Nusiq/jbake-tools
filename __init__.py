@@ -29,10 +29,10 @@ bl_info = {
 
 
 # Low poly object to bake onto
-bpy.types.Scene.low_poly = PointerProperty(type=bpy.types.Object)
+bpy.types.Scene.jbake_low_poly = PointerProperty(type=bpy.types.Object)
 
 # High poly object with the details to bake
-bpy.types.Scene.high_poly = PointerProperty(type=bpy.types.Object)
+bpy.types.Scene.jbake_high_poly = PointerProperty(type=bpy.types.Object)
 
 bpy.types.Scene.img_bake_width = bpy.props.IntProperty(
     name="Image Width",  description="Width of image to bake", default=2048)
